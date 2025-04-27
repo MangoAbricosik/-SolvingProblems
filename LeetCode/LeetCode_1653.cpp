@@ -1,21 +1,23 @@
-class OrderedStream {
+class Solution {
 public:
-    OrderedStream(int n) {
-        full.resize(n);
-        it = full.begin();
-    }
-
-    vector<string> insert(int idKey, string value) {
-        full[--idKey] = value;
-
-        vector<string> temp;
-        while (it != full.end() && *it != "") {
-            temp.push_back(*it);
-            it++;
+    int minimumDeletions(string s) {
+        vector<int> prefix;
+        prefix.push_back(s[0] == 'b' ? 1 : 0);
+        for (size_t i = 1; i < s.size(); i++) {
+            prefix.push_back(prefix[i - 1] + (s[i] == 'b' ? 1 : 0));
         }
-        return temp;
+
+        vector<int> suffix(s.size() - 1);
+        suffix.push_back(s[s.size() - 1] == 'a' ? 1 : 0);
+        for (int i = s.size() - 2; i > -1; i--) {
+            suffix[i] = suffix[i + 1] + (s[i] == 'a' ? 1 : 0);
+        };
+
+        int minDeletions = min(prefix[s.size() - 1], suffix[0]);
+        for (size_t i = 0; i < s.size() - 1; i++) {
+            int deletions = prefix[i] + suffix[i + 1];
+            minDeletions = min(minDeletions, deletions);
+        }
+        return minDeletions;
     }
-private:
-    vector<string> full;
-    vector<string>::iterator it;
 };
